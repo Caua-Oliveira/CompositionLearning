@@ -1,8 +1,15 @@
-using static System.Reflection.Metadata.BlobBuilder;
+namespace CompositionLearning.src;
 
-namespace CompositionLearning;
 public class Inventory
 {
+    private readonly List<InventorySlot?> _items;
+    public const int MaxSlots = 10;
+
+    public Inventory()
+    {
+        _items = [.. Enumerable.Repeat<InventorySlot?>(null, MaxSlots)];
+    }
+
     private class InventorySlot(Item item, int quantity)
     {
         public Item Item { get; } = item;
@@ -10,7 +17,7 @@ public class Inventory
 
         public int Add(int quantity)
         {
-            int spaceLeft = Item.maxStack - Quantity;
+            int spaceLeft = Item.MaxStack - Quantity;
             int quantityToAdd = Math.Min(spaceLeft, quantity);
             Quantity += quantityToAdd;
             return quantityToAdd;
@@ -27,96 +34,91 @@ public class Inventory
 
         public override string ToString()
         {
-            return $"Item: {Item.name}, Quantity: {Quantity}";
+            return $"Item: {Item.Name}, Quantity: {Quantity}";
         }
-
-    }
-
-    private List<InventorySlot?> items;
-
-    private readonly int MAX_SLOTS = 10;
-
-    public Inventory()
-    {
-        items = [.. new InventorySlot[MAX_SLOTS]];
     }
 
     public override string ToString()
     {
-        Console.WriteLine("Inventory Contents:");
-        for (int i = 0; i < items.Count; i++)
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("Inventory Contents:");
+        for (int i = 0; i < _items.Count; i++)
         {
-            if (items[i] != null)
-            {
-                Console.WriteLine($"Slot {i}: {items[i]}");
-            }
-            else
-            {
-                Console.WriteLine($"Slot {i}: Empty");
-            }
+            sb.AppendLine(_items[i] != null
+                ? $"Slot {i}: {_items[i]}"
+                : $"Slot {i}: Empty");
         }
-        return "";
+        return sb.ToString();
     }
 
     public void AddItem(Item item, int quantity)
     {
-        while (quantity > 0) 
+        while (quantity > 0)
         {
-            if (item.isStackable) 
+            if (item.IsStackable)
             {
-                InventorySlot? existing_slot = items.FirstOrDefault(slot => slot?.Item.id == item.id && slot.Quantity < item.maxStack);
+                InventorySlot? existingSlot = _items.FirstOrDefault(slot =>
+                    slot?.Item.Id == item.Id && slot.Quantity < item.MaxStack);
 
-
-                if (existing_slot != null) 
+                if (existingSlot != null)
                 {
-                    int added = existing_slot.Add(quantity);
+                    int added = existingSlot.Add(quantity);
                     quantity -= added;
                     continue;
                 }
             }
 
-            int empty_index = items.FindIndex(s => s == null);
-            if (empty_index == -1)
+            int emptyIndex = _items.FindIndex(s => s == null);
+            if (emptyIndex == -1)
             {
                 Console.WriteLine("Inventory is full!");
                 return;
-                
             }
 
-            if (item.isStackable)
+            if (item.IsStackable)
             {
-                items[empty_index] = new InventorySlot(item, 0);
-                int added = items[empty_index].Add(quantity);
+                _items[emptyIndex] = new InventorySlot(item, 0);
+                int added = _items[emptyIndex].Add(quantity);
                 quantity -= added;
                 continue;
             }
 
-            var empty_indices = items.Select((s, i) => s == null ? i : -1).Where(i => i != -1).Take(quantity).ToList();
-            if (empty_indices.Count < quantity)
+            var emptyIndices = _items
+                .Select((s, i) => s == null ? i : -1)
+                .Where(i => i != -1)
+                .Take(quantity)
+                .ToList();
+
+            if (emptyIndices.Count < quantity)
             {
                 Console.WriteLine("Not enough slots for all non-stackable items");
-                quantity = empty_indices.Count;
+                quantity = emptyIndices.Count;
             }
-            foreach (int index in empty_indices)
+
+            foreach (int index in emptyIndices)
             {
-                items[index] = new InventorySlot(item, 1);
+                _items[index] = new InventorySlot(item, 1);
             }
             quantity = 0;
         }
     }
 
-    public void RemoveItemByID(string id, int quantity)
+    public void RemoveItemById(string id, int quantity)
     {
-        if (ContainsID(id, quantity))
+        if (ContainsId(id, quantity))
         {
             while (quantity > 0)
             {
-                InventorySlot? existing_slot = items.FirstOrDefault(slot => slot?.Item.id == id);
-                int removed = existing_slot.Remove(quantity);
+                InventorySlot? existingSlot = _items.FirstOrDefault(slot => slot?.Item.Id == id);
+                if (existingSlot == null) break;
+
+                int removed = existingSlot.Remove(quantity);
                 quantity -= removed;
-                if (existing_slot.IsEmpty)
+
+                if (existingSlot.IsEmpty)
                 {
-                    items[items.IndexOf(existing_slot)] = null;
+                    int index = _items.IndexOf(existingSlot);
+                    _items[index] = null;
                 }
             }
         }
@@ -124,42 +126,42 @@ public class Inventory
         {
             Console.WriteLine("Not enough items to remove");
         }
-
     }
 
-    public int RemoveItemByIndex(int index, int quantity)
+    public Item? RemoveItemByIndex(int index, int quantity)
     {
-        if (index < 0 || index >= items.Count)
+        if (index < 0 || index >= _items.Count)
         {
             Console.WriteLine("Invalid inventory slot index!");
-            return 0;
+            return null;
         }
 
-        if (items[index] == null)
+        if (_items[index] == null)
         {
             Console.WriteLine("Slot is empty!");
-            return 0;
+            return null;
         }
 
-        int removed = items[index].Remove(quantity);
-        
-        if (items[index].IsEmpty)
+        Item itemRemoved = _items[index]!.Item;
+        int quantityTemoved = _items[index]!.Remove(quantity);
+
+        if (_items[index]!.IsEmpty)
         {
-            items[index] = null;
+            _items[index] = null;
         }
 
-        return removed;
+        return itemRemoved;
     }
 
-    public int CountID(string id)
+    public int CountId(string id)
     {
-        return items.Where(slot => slot?.Item.id == id).Sum(slot => slot.Quantity);
+        return _items
+            .Where(slot => slot?.Item.Id == id)
+            .Sum(slot => slot?.Quantity ?? 0);
     }
 
-    public bool ContainsID(string id, int min = 1) 
+    public bool ContainsId(string id, int min = 1)
     {
-        return CountID(id) >= min;
+        return CountId(id) >= min;
     }
-
-
 }

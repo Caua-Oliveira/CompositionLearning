@@ -1,17 +1,11 @@
-﻿namespace CompositionLearning
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            Inventory inv = new Inventory();
-            Item i = new Item();
-            inv.AddItem(i, 200);
-            inv.RemoveItemByID("itemx", 17);
-            inv.AddItem(i, 3);
-            inv.ToString();
+﻿using CompositionLearning.src;
+using CompositionLearning.src.Interfaces;
+using static CompositionLearning.src.Item.ItemManager;
 
+LoadItems();
+Item axe = GetItem("steel_axe");
+Tool axe_tool_component = axe.GetComponent<Tool>();
+Weapon axe_weapon_component = axe.GetComponent<Weapon>();
+Console.WriteLine(
+    $"Axe name: {axe.Name}, Axe durability: {axe_tool_component.Durability}, Axe damage: {axe_weapon_component.Damage}");
 
-        }
-    }
-}

@@ -1,0 +1,139 @@
+﻿{
+  "MeleeWeapons": [
+    {
+      "Id": "steel_sword",
+      "Name": "Steel Sword",
+      "Description": "A finely crafted steel sword, balanced for combat.",
+      "Type": "MeleeWeapon",
+      "MaxStack": 1,
+      "IsStackable": false,
+      "Components": [
+        {
+          "Type": "Weapon",
+          "DamageType": "Slash",
+          "Damage": 60,
+          "AttackSpeed": 1.2
+        }
+      ]
+    },
+    {
+      "Id": "iron_mace",
+      "Name": "Iron Mace",
+      "Description": "A heavy iron mace capable of crushing armor.",
+      "Type": "MeleeWeapon",
+      "MaxStack": 1,
+      "IsStackable": false,
+      "Components": [
+        {
+          "Type": "Weapon",
+          "DamageType": "Blunt",
+          "Damage": 80,
+          "AttackSpeed": 0.8
+        }
+      ]
+    }
+  ],
+
+  "Tools": [
+    {
+      "Id": "steel_pickaxe",
+      "Name": "Steel Pickaxe",
+      "Description": "A durable steel pickaxe designed for heavy mining.",
+      "Type": "Tool",
+      "MaxStack": 1,
+      "IsStackable": false,
+      "Components": [
+        {
+          "Type": "Tool",
+          "ToolType": "Pickaxe",
+          "MiningPower": 100,
+          "Durability": 150
+        },
+        {
+          "Type": "Weapon",
+          "DamageType": "Pierce",
+          "Damage": 50,
+          "AttackSpeed": 0.8
+        }
+      ]
+    },
+    {
+      "Id": "steel_axe",
+      "Name": "Steel Axe",
+      "Description": "A sharp steel axe capable of chopping down trees.",
+      "Type": "Tool",
+      "MaxStack": 1,
+      "IsStackable": false,
+      "Components": [
+        {
+          "Type": "Tool",
+          "ToolType": "Axe",
+          "MiningPower": 100,
+          "Durability": 150
+        },
+        {
+          "Type": "Weapon",
+          "DamageType": "Slash",
+          "Damage": 50,
+          "AttackSpeed": 0.8
+        }
+      ]
+    }
+  ],
+
+  "Armor": [
+    {
+      "Id": "chainmail_chestplate",
+      "Name": "Chainmail Chestplate",
+      "Description": "A protective chainmail chestplate that offers moderate defense.",
+      "Type": "Armor",
+      "MaxStack": 1,
+      "IsStackable": false,
+      "Components": [
+        {
+          "Type": "Armor",
+          "ArmorType": "Chestplate",
+          "Defense": 30,
+          "Weight": "Medium"
+        }
+      ]
+    },
+    {
+      "Id": "wooden_shield",
+      "Name": "Wooden Shield",
+      "Description": "A basic wooden shield capable of blocking attacks.",
+      "Type": "Armor",
+      "MaxStack": 1,
+      "IsStackable": false,
+      "Components": [
+        {
+          "Type": "Armor",
+          "ArmorType": "Shield",
+          "Defense": 15,
+          "Weight": "Light"
+        }
+      ]
+    }
+  ],
+
+  "Consumables": [
+    {
+      "Id": "health_potion",
+      "Name": "Health Potion",
+      "Description": "A magical potion that restores health.",
+      "Type": "Consumable",
+      "MaxStack": 5,
+      "IsStackable": true,
+      "Components": [
+        {
+          "Type": "Consumable",
+          "Effect": "RestoreHealth",
+          "Value": 50,
+          "IsInstant": true,
+          "Duration": 0
+        }
+      ]
+    }
+  ]
+
+}
