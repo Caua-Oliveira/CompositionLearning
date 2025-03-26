@@ -3,13 +3,13 @@
 
 public class IItemComponent { }
 
-public class Weapon : IItemComponent
+public class WeaponComponent : IItemComponent
 {
     public int Damage { get; set; }
     public string DamageType { get; set; }
     public float AttackSpeed { get; set; }
 
-    public Weapon(int damage, string damageType, float attackSpeed)
+    public WeaponComponent(int damage, string damageType, float attackSpeed)
     {
         Damage = damage;
         DamageType = damageType;
@@ -24,33 +24,31 @@ public class Weapon : IItemComponent
 }
 
 // Component for tool-related behavior
-public class Tool : IItemComponent
+public class ToolComponent : IItemComponent
 {
     public string ToolType { get; set; }
     public int MiningPower { get; set; }
-    public int Durability { get; set; }
 
-    public Tool(string toolType, int miningPower, int durability)
+    public ToolComponent(string toolType, int miningPower)
     {
         ToolType = toolType;
         MiningPower = miningPower;
-        Durability = durability;
         
     }
 
     public override string ToString()
     {
-        return $"Tool Type: {ToolType}, Mining Power: {MiningPower}, Durability: {Durability}";
+        return $"Tool Type: {ToolType}, Mining Power: {MiningPower}";
     }
 }
 
 // Component for armor properties
-public class Armor : IItemComponent
+public class ArmorComponent : IItemComponent
 {
     public int Defense { get; set; }
     public string Weight { get; set; }
 
-    public Armor(int defense, string weight)
+    public ArmorComponent(int defense, string weight)
     {
         Defense = defense;
         Weight = weight;
@@ -63,13 +61,13 @@ public class Armor : IItemComponent
 }
 
 // Component for consumable properties
-public class Consumable : IItemComponent
+public class ConsumableComponent : IItemComponent
 {
     public string Effect { get; set; }
     public int Value { get; set; }
     public bool IsInstant { get; set; }
     public float Duration { get; set; }
-    public Consumable(string effect, int value, bool isInstant, float duration)
+    public ConsumableComponent(string effect, int value, bool isInstant, float duration)
     {
         Effect = effect;
         Value = value;
@@ -80,5 +78,20 @@ public class Consumable : IItemComponent
     public override string ToString()
     {
         return $"Effect: {Effect}, Value: {Value}, Is Instant: {IsInstant}, Duration: {Duration}";
+    }
+}
+
+public class DurableComponent: IItemComponent
+{
+    public int Durability { get; set; }
+
+    public DurableComponent(int durability)
+    {
+        Durability = durability;
+    }
+
+    public override string ToString()
+    {
+        return $"Durability: {Durability}";
     }
 }

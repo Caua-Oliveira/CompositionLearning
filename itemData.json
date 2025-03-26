@@ -9,10 +9,14 @@
       "IsStackable": false,
       "Components": [
         {
-          "Type": "Weapon",
+          "Type": "WeaponComponent",
           "DamageType": "Slash",
           "Damage": 60,
           "AttackSpeed": 1.2
+        },
+        {
+          "Type": "DurableComponent",
+          "Durability": 100
         }
       ]
     },
@@ -25,10 +29,14 @@
       "IsStackable": false,
       "Components": [
         {
-          "Type": "Weapon",
+          "Type": "WeaponComponent",
           "DamageType": "Blunt",
           "Damage": 80,
           "AttackSpeed": 0.8
+        },
+        {
+          "Type": "DurableComponent",
+          "Durability": 100
         }
       ]
     }
@@ -44,16 +52,19 @@
       "IsStackable": false,
       "Components": [
         {
-          "Type": "Tool",
+          "Type": "ToolComponent",
           "ToolType": "Pickaxe",
-          "MiningPower": 100,
-          "Durability": 150
+          "MiningPower": 100
         },
         {
-          "Type": "Weapon",
+          "Type": "WeaponComponent",
           "DamageType": "Pierce",
           "Damage": 50,
           "AttackSpeed": 0.8
+        },
+        {
+          "Type": "DurableComponent",
+          "Durability": 100
         }
       ]
     },
@@ -66,16 +77,19 @@
       "IsStackable": false,
       "Components": [
         {
-          "Type": "Tool",
+          "Type": "ToolComponent",
           "ToolType": "Axe",
-          "MiningPower": 100,
-          "Durability": 150
+          "MiningPower": 100
         },
         {
-          "Type": "Weapon",
+          "Type": "WeaponComponent",
           "DamageType": "Slash",
           "Damage": 50,
           "AttackSpeed": 0.8
+        },
+        {
+          "Type": "DurableComponent",
+          "Durability": 100
         }
       ]
     }
@@ -91,10 +105,14 @@
       "IsStackable": false,
       "Components": [
         {
-          "Type": "Armor",
+          "Type": "ArmorComponent",
           "ArmorType": "Chestplate",
           "Defense": 30,
           "Weight": "Medium"
+        },
+        {
+          "Type": "DurableComponent",
+          "Durability": 100
         }
       ]
     },
@@ -107,10 +125,14 @@
       "IsStackable": false,
       "Components": [
         {
-          "Type": "Armor",
+          "Type": "ArmorComponent",
           "ArmorType": "Shield",
           "Defense": 15,
           "Weight": "Light"
+        },
+        {
+          "Type": "DurableComponent",
+          "Durability": 100
         }
       ]
     }
@@ -126,7 +148,7 @@
       "IsStackable": true,
       "Components": [
         {
-          "Type": "Consumable",
+          "Type": "ConsumableComponent",
           "Effect": "RestoreHealth",
           "Value": 50,
           "IsInstant": true,

@@ -1,5 +1,6 @@
 ﻿using CompositionLearning.src.Interfaces;
 using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace CompositionLearning.src;
 
@@ -29,65 +30,78 @@ public class Item
         // Load item definitions from a JSON file.
         public static void LoadItems()
         {
-            string jsonFilePath = "C:\\Users\\Player 1\\Documents\\C# Projects\\CompositionLearning\\itemData.json";
-            string json = File.ReadAllText(jsonFilePath);
+            string json = File.ReadAllText("itemData.json");
 
-            JObject jsonData = JObject.Parse(json);
+            // Deserialize JSON into a dictionary where each category holds a list of items as JsonElement.
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            Dictionary<string, List<JsonElement>>? jsonData = JsonSerializer.Deserialize<Dictionary<string, List<JsonElement>>>(json, options);
+
+            if (jsonData == null)
+            {
+                Console.WriteLine("Failed to deserialize JSON.");
+                return;
+            }
 
             // Iterate through each category (MeleeWeapons, Tools, etc.)
             foreach (var category in jsonData)
             {
-                JArray itemsArray = (JArray)category.Value;
-
-                foreach (JObject itemObj in itemsArray)
+                foreach (JsonElement itemElement in category.Value)
                 {
-                    string id = itemObj["Id"].ToString();
-                    string name = itemObj["Name"].ToString();
-                    string description = itemObj["Description"].ToString();
-                    string type = itemObj["Type"].ToString();
-                    int maxStack = itemObj["MaxStack"].ToObject<int>();
-                    bool isStackable = itemObj["IsStackable"].ToObject<bool>();
+                    // Extract item properties.
+                    string id = itemElement.GetProperty("Id").GetString()!;
+                    string name = itemElement.GetProperty("Name").GetString()!;
+                    string description = itemElement.GetProperty("Description").GetString()!;
+                    string type = itemElement.GetProperty("Type").GetString()!;
+                    int maxStack = itemElement.GetProperty("MaxStack").GetInt32();
+                    bool isStackable = itemElement.GetProperty("IsStackable").GetBoolean();
 
+                    // Create a new item instance.
                     Item item = new(id, name, description, type, maxStack, isStackable);
 
                     // Process and add each component if available.
-                    if (itemObj["Components"] != null)
+                    if (itemElement.TryGetProperty("Components", out JsonElement componentsElement) &&
+                        componentsElement.ValueKind == JsonValueKind.Array)
                     {
-                        foreach (JObject comp in itemObj["Components"]!)
+                        foreach (JsonElement comp in componentsElement.EnumerateArray())
                         {
-                            string compType = comp["Type"]!.ToString();
+                            string compType = comp.GetProperty("Type").GetString()!;
                             IItemComponent? component = null;
 
                             switch (compType)
                             {
-                                case "Weapon":
-                                    int damage = comp["Damage"].ToObject<int>();
-                                    string damageType = comp["DamageType"].ToString();
-                                    float attackSpeed = comp["AttackSpeed"].ToObject<float>();
-                                    component = new Weapon(damage, damageType, attackSpeed);
+                                case "WeaponComponent":
+                                    int damage = comp.GetProperty("Damage").GetInt32();
+                                    string damageType = comp.GetProperty("DamageType").GetString()!;
+                                    float attackSpeed = comp.GetProperty("AttackSpeed").GetSingle();
+                                    component = new WeaponComponent(damage, damageType, attackSpeed);
                                     break;
 
-                                case "Tool":
-                                    string toolType = comp["ToolType"].ToString();
-                                    int miningPower = comp["MiningPower"].ToObject<int>();
-                                    int durability = comp["Durability"].ToObject<int>();
-                                    component = new Tool(toolType, miningPower, durability);
+                                case "ToolComponent":
+                                    string toolType = comp.GetProperty("ToolType").GetString()!;
+                                    int miningPower = comp.GetProperty("MiningPower").GetInt32();
+                                    component = new ToolComponent(toolType, miningPower);
                                     break;
 
-                                case "Armor":
-                                    int defense = comp["Defense"].ToObject<int>();
-                                    string weight = comp["Weight"].ToString();
-                                    component = new Armor(defense, weight);
+                                case "ArmorComponent":
+                                    int defense = comp.GetProperty("Defense").GetInt32();
+                                    string weight = comp.GetProperty("Weight").GetString()!;
+                                    component = new ArmorComponent(defense, weight);
                                     break;
 
-                                case "Consumable":
-                                    string effect = comp["Effect"].ToString();
-                                    int value = comp["Value"].ToObject<int>();
-                                    bool isInstant = comp["IsInstant"].ToObject<bool>();
-                                    float duration = comp["Duration"].ToObject<float>();
-                                    component = new Consumable(effect, value, isInstant, duration);
+                                case "ConsumableComponent":
+                                    string effect = comp.GetProperty("Effect").GetString()!;
+                                    int value = comp.GetProperty("Value").GetInt32();
+                                    bool isInstant = comp.GetProperty("IsInstant").GetBoolean();
+                                    float duration = comp.GetProperty("Duration").GetSingle();
+                                    component = new ConsumableComponent(effect, value, isInstant, duration);
                                     break;
-
+                                case "DurabilityComponent":
+                                    int durability = comp.GetProperty("Durability").GetInt32();
+                                    component = new DurableComponent(durability);
+                                    break;
                                 default:
                                     break;
                             }
